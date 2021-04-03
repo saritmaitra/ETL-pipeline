@@ -1,0 +1,304 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name"
+		},
+		"LinkedAzureBlobStorage": {
+			"type": "string"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/HierarchialStructure')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow1",
+								"type": "DataFlowReference"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "input_csv",
+								"type": "DatasetReference"
+							},
+							"name": "inputCSVData"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "output_json",
+								"type": "DatasetReference"
+							},
+							"name": "outputJSONData"
+						}
+					],
+					"transformations": [
+						{
+							"name": "FlatCSVtoHierarchyJSON"
+						}
+					],
+					"script": "source(output(\n\t\tkey as string,\n\t\tname as string,\n\t\tcolour as string,\n\t\twebsite as string,\n\t\tlogo as string,\n\t\tlastUpdate as string,\n\t\t{location.region} as string,\n\t\t{location.country} as string,\n\t\t{location.city} as string,\n\t\t{stats.founded} as string,\n\t\t{stats.employee.min} as string,\n\t\t{stats.employee.max} as string,\n\t\t{stats.patents} as string,\n\t\t{stats.revenue} as string,\n\t\t{stats.printersSold} as string,\n\t\t{business.valueChainPosition} as string,\n\t\t{business.valueChainPosition.type} as string,\n\t\t{business.strategy} as string,\n\t\t{business.openSystem} as string,\n\t\t{business.technology} as string,\n\t\t{business.keywords} as string,\n\t\t{network.companyKey} as string,\n\t\t{network.location.region} as string,\n\t\t{network.location.country} as string,\n\t\t{network.partnership} as string,\n\t\t{network.partnership.type} as string,\n\t\t{network.supplier} as string,\n\t\t{network.valueChainPosition} as string,\n\t\t{network.valueChainPosition.type} as string,\n\t\t{network.technologyInCompanyA} as string,\n\t\t{network.technologyInCompanyB} as string,\n\t\t{network.keypersonInCompanyA} as string,\n\t\t{network.keypersonInCompanyB} as string,\n\t\t{network.timestamp} as string,\n\t\t{network.bling} as string,\n\t\t{network.hyperlink} as string,\n\t\t{persons.firstName} as string,\n\t\t{persons.lastName} as string,\n\t\t{persons.email} as string,\n\t\t{persons.functions} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> inputCSVData\ninputCSVData derive({8af5e2b9b71ad7c9e642eb2ae2d07b4f} = @(key=key,\n\t\tname=name,\n\t\tcoloiur=colour,\n\t\twebsite=website,\n\t\tlogo=logo,\n\t\tlastUpdate=lastUpdate,\n\t\tlocation=@(region={location.region},\n\t\tcountry={location.country},\n\t\tcity={location.city}),\n\t\tstats=@(founded={stats.founded},\n\t\temployees=@(min={stats.employee.min},\n\t\tmax={stats.employee.max}),\n\t\tpatents={stats.patents},\n\t\trevenue={stats.revenue},\n\t\tprintersSold={stats.printersSold}),\n\t\tbusiness=@(valueChainPosition=@(name={business.valueChainPosition}),\n\t\tstrategy={business.strategy},\n\t\topenSystem={business.openSystem},\n\t\ttechnology=@(name={business.technology}),\n\t\tkeywords=split({business.keywords}, '|')),\n\t\tnetwork=@(companyKey={network.companyKey},\n\t\tpartnership={network.partnership},\n\t\tsupplier={network.supplier},\n\t\ttechnologyInCompanyA=@(name={network.technologyInCompanyA}),\n\t\ttechnologyInCompanyB=@(name={network.technologyInCompanyB}),\n\t\tkeypersonInCompanyA=split({network.keypersonInCompanyA}, '|'),\n\t\tkeypersonInCompanyB=split({network.keypersonInCompanyB}, '|'),\n\t\ttimestamp={network.timestamp},\n\t\tbling={network.bling},\n\t\thyperlink={network.hyperlink}))) ~> FlatCSVtoHierarchyJSON\nFlatCSVtoHierarchyJSON sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['TranformedJSONData'],\n\tmapColumn(\n\t\t{8af5e2b9b71ad7c9e642eb2ae2d07b4f}\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> outputJSONData"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/input_csv')]",
+				"[concat(variables('factoryId'), '/datasets/output_json')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/input_csv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('LinkedAzureBlobStorage')]",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "dataset.csv",
+						"folderPath": "input_data",
+						"container": "saritadfcontainer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "key",
+						"type": "String"
+					},
+					{
+						"name": "name",
+						"type": "String"
+					},
+					{
+						"name": "colour",
+						"type": "String"
+					},
+					{
+						"name": "website",
+						"type": "String"
+					},
+					{
+						"name": "logo",
+						"type": "String"
+					},
+					{
+						"name": "lastUpdate",
+						"type": "String"
+					},
+					{
+						"name": "location.region",
+						"type": "String"
+					},
+					{
+						"name": "location.country",
+						"type": "String"
+					},
+					{
+						"name": "location.city",
+						"type": "String"
+					},
+					{
+						"name": "stats.founded",
+						"type": "String"
+					},
+					{
+						"name": "stats.employee.min",
+						"type": "String"
+					},
+					{
+						"name": "stats.employee.max",
+						"type": "String"
+					},
+					{
+						"name": "stats.patents",
+						"type": "String"
+					},
+					{
+						"name": "stats.revenue",
+						"type": "String"
+					},
+					{
+						"name": "stats.printersSold",
+						"type": "String"
+					},
+					{
+						"name": "business.valueChainPosition",
+						"type": "String"
+					},
+					{
+						"name": "business.valueChainPosition.type",
+						"type": "String"
+					},
+					{
+						"name": "business.strategy",
+						"type": "String"
+					},
+					{
+						"name": "business.openSystem",
+						"type": "String"
+					},
+					{
+						"name": "business.technology",
+						"type": "String"
+					},
+					{
+						"name": "business.keywords",
+						"type": "String"
+					},
+					{
+						"name": "network.companyKey",
+						"type": "String"
+					},
+					{
+						"name": "network.location.region",
+						"type": "String"
+					},
+					{
+						"name": "network.location.country",
+						"type": "String"
+					},
+					{
+						"name": "network.partnership",
+						"type": "String"
+					},
+					{
+						"name": "network.partnership.type",
+						"type": "String"
+					},
+					{
+						"name": "network.supplier",
+						"type": "String"
+					},
+					{
+						"name": "network.valueChainPosition",
+						"type": "String"
+					},
+					{
+						"name": "network.valueChainPosition.type",
+						"type": "String"
+					},
+					{
+						"name": "network.technologyInCompanyA",
+						"type": "String"
+					},
+					{
+						"name": "network.technologyInCompanyB",
+						"type": "String"
+					},
+					{
+						"name": "network.keypersonInCompanyA",
+						"type": "String"
+					},
+					{
+						"name": "network.keypersonInCompanyB",
+						"type": "String"
+					},
+					{
+						"name": "network.timestamp",
+						"type": "String"
+					},
+					{
+						"name": "network.bling",
+						"type": "String"
+					},
+					{
+						"name": "network.hyperlink",
+						"type": "String"
+					},
+					{
+						"name": "persons.firstName",
+						"type": "String"
+					},
+					{
+						"name": "persons.lastName",
+						"type": "String"
+					},
+					{
+						"name": "persons.email",
+						"type": "String"
+					},
+					{
+						"name": "persons.functions",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/output_json')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('LinkedAzureBlobStorage')]",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "H_dataset.json",
+						"folderPath": "output_data",
+						"container": "saritadfcontainer"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": []
+		}
+	]
+}
