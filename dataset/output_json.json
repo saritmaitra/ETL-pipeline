@@ -1,0 +1,20 @@
+{
+	"name": "output_json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LinkedAzureBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "H_dataset.json",
+				"folderPath": "output_data",
+				"container": "saritadfcontainer"
+			}
+		},
+		"schema": {}
+	}
+}

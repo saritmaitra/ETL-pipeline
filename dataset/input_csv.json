@@ -1,0 +1,185 @@
+{
+	"name": "input_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LinkedAzureBlobStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "dataset.csv",
+				"folderPath": "input_data",
+				"container": "saritadfcontainer"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "key",
+				"type": "String"
+			},
+			{
+				"name": "name",
+				"type": "String"
+			},
+			{
+				"name": "colour",
+				"type": "String"
+			},
+			{
+				"name": "website",
+				"type": "String"
+			},
+			{
+				"name": "logo",
+				"type": "String"
+			},
+			{
+				"name": "lastUpdate",
+				"type": "String"
+			},
+			{
+				"name": "location.region",
+				"type": "String"
+			},
+			{
+				"name": "location.country",
+				"type": "String"
+			},
+			{
+				"name": "location.city",
+				"type": "String"
+			},
+			{
+				"name": "stats.founded",
+				"type": "String"
+			},
+			{
+				"name": "stats.employee.min",
+				"type": "String"
+			},
+			{
+				"name": "stats.employee.max",
+				"type": "String"
+			},
+			{
+				"name": "stats.patents",
+				"type": "String"
+			},
+			{
+				"name": "stats.revenue",
+				"type": "String"
+			},
+			{
+				"name": "stats.printersSold",
+				"type": "String"
+			},
+			{
+				"name": "business.valueChainPosition",
+				"type": "String"
+			},
+			{
+				"name": "business.valueChainPosition.type",
+				"type": "String"
+			},
+			{
+				"name": "business.strategy",
+				"type": "String"
+			},
+			{
+				"name": "business.openSystem",
+				"type": "String"
+			},
+			{
+				"name": "business.technology",
+				"type": "String"
+			},
+			{
+				"name": "business.keywords",
+				"type": "String"
+			},
+			{
+				"name": "network.companyKey",
+				"type": "String"
+			},
+			{
+				"name": "network.location.region",
+				"type": "String"
+			},
+			{
+				"name": "network.location.country",
+				"type": "String"
+			},
+			{
+				"name": "network.partnership",
+				"type": "String"
+			},
+			{
+				"name": "network.partnership.type",
+				"type": "String"
+			},
+			{
+				"name": "network.supplier",
+				"type": "String"
+			},
+			{
+				"name": "network.valueChainPosition",
+				"type": "String"
+			},
+			{
+				"name": "network.valueChainPosition.type",
+				"type": "String"
+			},
+			{
+				"name": "network.technologyInCompanyA",
+				"type": "String"
+			},
+			{
+				"name": "network.technologyInCompanyB",
+				"type": "String"
+			},
+			{
+				"name": "network.keypersonInCompanyA",
+				"type": "String"
+			},
+			{
+				"name": "network.keypersonInCompanyB",
+				"type": "String"
+			},
+			{
+				"name": "network.timestamp",
+				"type": "String"
+			},
+			{
+				"name": "network.bling",
+				"type": "String"
+			},
+			{
+				"name": "network.hyperlink",
+				"type": "String"
+			},
+			{
+				"name": "persons.firstName",
+				"type": "String"
+			},
+			{
+				"name": "persons.lastName",
+				"type": "String"
+			},
+			{
+				"name": "persons.email",
+				"type": "String"
+			},
+			{
+				"name": "persons.functions",
+				"type": "String"
+			}
+		]
+	}
+}
