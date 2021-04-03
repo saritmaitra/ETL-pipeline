@@ -1,0 +1,9 @@
+{
+	"name": "instanceADF",
+	"location": "southeastasia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "f79d884a-e1f4-4713-accf-299c7fc32353",
+		"tenantId": "fbbe521b-56ab-4ff9-9a7d-72fd1a20970b"
+	}
+}
