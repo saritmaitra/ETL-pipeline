@@ -62,7 +62,7 @@ All the codes and pipeline have been validated. I have used ADF debug the create
     - GitHub: code repository & version control
 
 Below is workflow diagram for better understanding:
-![](images/WorkflowDiagram_Q1.PNG)
+![](images/ETL pipeline.PNG)
 
 References: 
   - https://docs.microsoft.com/en-us/azure/data-factory/data-flow-create
